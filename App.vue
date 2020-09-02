@@ -14,4 +14,13 @@
 
 <style>
 	/*每个页面公共css */
+	.logo{
+		width: 223rpx;
+		height: 69rpx;
+		background: url(static/logo.png) no-repeat center center;
+		background-size: cover;
+	}
+	
+	
+	
 </style>
