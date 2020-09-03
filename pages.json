@@ -6,7 +6,11 @@
 				
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/chenggong/chenggong",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "Global Surgicel Week 2020",

@@ -14,7 +14,7 @@
 		</view>
 		<view v-if="choosePhoto">
 			<view class="photo-box" @click="upload">
-				
+
 			</view>
 			<view class="seephoto"></view>
 		</view>
@@ -46,7 +46,7 @@
 					</view>
 					<view class="other">
 						<picker @change="bindPickerChange" :value="index" :range="array" mode="selector" class="picker">
-							
+
 						</picker>
 						<view class="uni-input">{{array[index]}}</view>
 					</view>
@@ -58,7 +58,7 @@
 					</view>
 					<view class="other">
 						<picker @change="bindPickerChange1" :value="index1" :range="array0" mode="selector" class="picker">
-							
+
 						</picker>
 						<view class="uni-input">{{array0[index1]}}</view>
 					</view>
@@ -71,6 +71,13 @@
 						<input type="text" value="" class="name-input" v-model="form.address" />
 					</view>
 				</view>
+
+			</view>
+			<view class="upload-btn">
+				<view class="xinxi" v-if="maskshow">
+					<text>正在上传照片：{{jindu}}%</text>
+					<text>请勿关闭页面</text>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -81,45 +88,95 @@
 		data() {
 			return {
 				choosePhoto: true,
+				maskshow:false,
+				jindu:0,
 				form: {
 					name: '',
-					src:'',
+					src: '',
 					hospital: '',
-					address: ''
+					address: '',
+					area1: '',
+					area2: ''
 				},
-				array: ['中国', '美国', '巴西', '日本','韩国','俄罗斯','朝鲜'],
-				array0:[],
+				array: ['中国', '美国', '巴西', '日本', '韩国', '俄罗斯', '朝鲜'],
+				array0: [],
 				index: 0,
 				index1: 0,
-				array1: [['中国1', '美国1', '巴西1'],['中国2', '美国2', '巴西2'],['中国3', '美国3', '巴西3'],['中国4', '美国4', '巴西4'],['中国5', '美国5', '巴西5'],['中国6', '美国6', '巴西6'],['中国7', '美国7', '巴西7'],]
-				
+				array1: [
+					['中国1', '美国1', '巴西1'],
+					['中国2', '美国2', '巴西2'],
+					['中国3', '美国3', '巴西3'],
+					['中国4', '美国4', '巴西4'],
+					['中国5', '美国5', '巴西5'],
+					['中国6', '美国6', '巴西6'],
+					['中国7', '美国7', '巴西7'],
+				]
+
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
-			upload(){
+			upload() {
+				let that = this
+				var shijian = new Date().getTime()
 				uni.chooseImage({
-				    count: 1, //默认9
-				    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-				    sourceType: ['album'], //从相册选择
-				    success: (res) =>{
-				        console.log(res);
-								this.choosePhoto = false
-								this.form.src = res.tempFilePaths[0]
-				    }
+					count: 1, //默认9
+					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+					sourceType: ['album'], //从相册选择
+					success: (res) => {
+						console.log(res);
+						this.choosePhoto = false
+						this.form.src = res.tempFilePaths[0]
+						if (res.size > 4000000) {
+							uni.showModal({
+								content: '照片最大4M',
+								showCancel: true
+							});
+						} else {
+							that.maskshow = !that.maskshow
+							let obj = Object.assign(this.form, {
+								shijian: shijian
+							})
+							console.log('obj', obj)
+							const uploadTask = uni.uploadFile({
+								url: 'http://3w.donglianguoji.com/app/week/php/shipin.php', //仅为示例，非真实的接口地址
+								filePath: this.form.src,
+								name: 'file',
+								formData: obj,
+								success: (uploadFileRes) => {
+									console.log(uploadFileRes.data);
+								}
+							});
+							uploadTask.onProgressUpdate((res) => {
+								console.log('上传进度' + res.progress);
+								that.jindu = res.progress
+								// console.log('已经上传的数据长度' + res.totalBytesSent);
+								// console.log('预期需要上传的数据总长度' + res.totalBytesExpectedToSend);
+								if (res.progress >= 100) {
+									// uni.hideLoading()
+									uni.redirectTo({
+										url: '../chenggong/chenggong'
+									})
+								}
+
+							});
+						}
+					}
 				});
 			},
 			bindPickerChange(e) {
 				console.log('大区值为', e.target.value)
 				this.index = e.target.value
+				this.form.area1 = e.target.value
 				this.array0 = this.array1[this.index]
 				console.log(this.array0)
 			},
 			bindPickerChange1(e) {
 				console.log('小区值为', e.target.value)
 				this.index1 = e.target.value
+				this.form.area2 = e.target.value
 			},
 		}
 	}
@@ -267,7 +324,8 @@
 		padding-left: 20rpx;
 		font-size: 26rpx;
 	}
-	.uni-input{
+
+	.uni-input {
 		font-size: 26rpx;
 		height: 100%;
 		line-height: 30rpx;
@@ -281,11 +339,25 @@
 		align-items: center;
 		padding-left: 20rpx;
 	}
-	.picker{
+
+	.picker {
 		height: 100%;
 	}
-	.photo-content-1{
+
+	.photo-content-1 {
 		width: 100%;
 		height: 100%;
 	}
+
+	.upload-btn {
+		width: 300rpx;
+		height: 100rpx;
+		background: #808080;
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		top: 1220rpx;
+	}
+	.xinxi{padding: 25rpx 40rpx;display: flex;flex-direction: column;justify-content: center;align-items: center;background: #fff;border-radius: 20rpx;}
+	.xinxi>text{line-height: 60rpx;color: #DD524D;}
 </style>
