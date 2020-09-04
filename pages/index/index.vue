@@ -3,12 +3,12 @@
 
 		<view class="logo"></view>
 
-		<view class="bg1">
+		<!-- <view class="bg1">
 			<image src="../../static/bg1.png" mode="widthFix" class="pic"></image>
 		</view>
 		<view class="bg2">
 			<image src="../../static/bg2.png" mode="widthFix" class="pic"></image>
-		</view>
+		</view> -->
 		<view class="title">
 			<image src="../../static/title.png" mode="widthFix" class="pic"></image>
 		</view>
@@ -16,7 +16,7 @@
 			<view class="photo-box" @click="upload">
 
 			</view>
-			<view class="seephoto"></view>
+			<view class="seephoto" @click="seePhoto"></view>
 		</view>
 		<view v-else>
 			<view class="photo-content">
@@ -30,6 +30,14 @@
 					</view>
 					<view class="other">
 						<input type="text" value="" class="name-input" v-model="form.name" />
+					</view>
+				</view>
+				<view class="form-box-1">
+					<view class="txt-pic">
+						<image src="../../static/txt6.png" mode="widthFix" class="txt-pic-6"></image>
+					</view>
+					<view class="other">
+						<input type="text" value="" class="name-input" v-model="form.keshi" />
 					</view>
 				</view>
 				<view class="form-box-1">
@@ -73,7 +81,7 @@
 				</view>
 
 			</view>
-			<view class="upload-btn">
+			<view class="upload-btn" @click="uploadBtn">
 				<view class="xinxi" v-if="maskshow">
 					<text>正在上传照片：{{jindu}}%</text>
 					<text>请勿关闭页面</text>
@@ -92,11 +100,12 @@
 				jindu:0,
 				form: {
 					name: '',
+					keshi:'',
 					src: '',
 					hospital: '',
 					address: '',
-					area1: '',
-					area2: ''
+					area1: 0,
+					area2: 0
 				},
 				array: ['中国', '美国', '巴西', '日本', '韩国', '俄罗斯', '朝鲜'],
 				array0: [],
@@ -115,57 +124,72 @@
 			}
 		},
 		onLoad() {
-
+			this.array0 = this.array1[0]
 		},
 		methods: {
 			upload() {
 				let that = this
-				var shijian = new Date().getTime()
+				
 				uni.chooseImage({
 					count: 1, //默认9
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album'], //从相册选择
 					success: (res) => {
 						console.log(res);
-						this.choosePhoto = false
-						this.form.src = res.tempFilePaths[0]
+						
+						
 						if (res.size > 4000000) {
 							uni.showModal({
 								content: '照片最大4M',
 								showCancel: true
 							});
 						} else {
-							that.maskshow = !that.maskshow
-							let obj = Object.assign(this.form, {
-								shijian: shijian
-							})
-							console.log('obj', obj)
-							const uploadTask = uni.uploadFile({
-								url: 'http://3w.donglianguoji.com/app/week/php/shipin.php', //仅为示例，非真实的接口地址
-								filePath: this.form.src,
-								name: 'file',
-								formData: obj,
-								success: (uploadFileRes) => {
-									console.log(uploadFileRes.data);
-								}
-							});
-							uploadTask.onProgressUpdate((res) => {
-								console.log('上传进度' + res.progress);
-								that.jindu = res.progress
-								// console.log('已经上传的数据长度' + res.totalBytesSent);
-								// console.log('预期需要上传的数据总长度' + res.totalBytesExpectedToSend);
-								if (res.progress >= 100) {
-									// uni.hideLoading()
-									uni.redirectTo({
-										url: '../chenggong/chenggong'
-									})
-								}
-
-							});
+							this.choosePhoto = false
+							this.form.src = res.tempFilePaths[0]
+							
+							
 						}
 					}
 				});
 			},
+			
+			
+			uploadBtn(){
+				uni.showLoading({
+					title:'上传中请勿刷新',
+					mask:true
+				})
+				let that = this
+				var shijian = new Date().getTime()
+				// that.maskshow = !that.maskshow
+				let obj = Object.assign(this.form, {
+					shijian: shijian
+				})
+				console.log('obj', obj)
+				const uploadTask = uni.uploadFile({
+					url: 'http://3w.donglianguoji.com/app/week/php/shipin.php', //仅为示例，非真实的接口地址
+					filePath: this.form.src,
+					name: 'file',
+					formData: obj,
+					success: (uploadFileRes) => {
+						console.log(uploadFileRes);
+					}
+				});
+				uploadTask.onProgressUpdate((res) => {
+					console.log('上传进度' + res.progress);
+					that.jindu = res.progress
+					// console.log('已经上传的数据长度' + res.totalBytesSent);
+					// console.log('预期需要上传的数据总长度' + res.totalBytesExpectedToSend);
+					if (res.progress >= 100) {
+						uni.hideLoading()
+						uni.redirectTo({
+							url: '../chenggong/chenggong'
+						})
+					}
+				
+				});
+			},
+			
 			bindPickerChange(e) {
 				console.log('大区值为', e.target.value)
 				this.index = e.target.value
@@ -178,13 +202,20 @@
 				this.index1 = e.target.value
 				this.form.area2 = e.target.value
 			},
+			seePhoto(){
+				uni.redirectTo({
+					url:'../show/show'
+				})
+			}
 		}
 	}
 </script>
 
 <style>
 	page {
-		background: #e9edef;
+		/* background: #e9edef; */
+		background: url(../../static/bg.jpg) no-repeat bottom center;
+		background-size: 100% auto;
 	}
 
 	.content {
@@ -259,7 +290,7 @@
 	}
 
 	.form-box {
-		width: 572rpx;
+		width: 574rpx;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -270,10 +301,12 @@
 	}
 
 	.form-box-1 {
-		width: 572rpx;
-		height: 68rpx;
+		width: 574rpx;
+		height: 52rpx;
 		margin-bottom: 30rpx;
-		border: 1px solid #007AFF;
+		/* border: 1px solid #007AFF; */
+		background: url(../../static/bgbg.png) no-repeat center center;
+		background-size: 100%;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
@@ -282,37 +315,41 @@
 
 	.txt-pic {
 		width: 142rpx;
-		height: 30rpx;
+		height: 32rpx;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		margin-left: 30rpx;
 	}
 
 	.txt-pic-1 {
-		width: 138rpx;
-		height: 29rpx;
+		width: 139rpx;
+		height: 31rpx;
 	}
 
 	.txt-pic-2 {
 		width: 142rpx;
-		height: 30rpx;
+		height: 31rpx;
 	}
 
 	.txt-pic-3 {
-		width: 139rpx;
+		width: 140rpx;
 		height: 29rpx;
 	}
 
 	.txt-pic-4 {
 		width: 139rpx;
-		height: 29rpx;
+		height: 30rpx;
 	}
 
 	.txt-pic-5 {
-		width: 141rpx;
-		height: 28rpx;
+		width: 140rpx;
+		height: 30rpx;
 	}
-
+.txt-pic-6 {
+		width: 141rpx;
+		height: 32rpx;
+	}
 	.other {
 		flex: 1;
 		height: 100%;
@@ -350,13 +387,15 @@
 	}
 
 	.upload-btn {
-		width: 300rpx;
-		height: 100rpx;
+		width: 223rpx;
+		height: 63rpx;
 		background: #808080;
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
 		top: 1220rpx;
+		background: url(../../static/applybtn.png) no-repeat center center;
+		background-size: 100%;
 	}
 	.xinxi{padding: 25rpx 40rpx;display: flex;flex-direction: column;justify-content: center;align-items: center;background: #fff;border-radius: 20rpx;}
 	.xinxi>text{line-height: 60rpx;color: #DD524D;}

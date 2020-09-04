@@ -10,6 +10,10 @@
             "path" : "pages/chenggong/chenggong",
             "style" : {}
         }
+        ,{
+            "path" : "pages/show/show",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
