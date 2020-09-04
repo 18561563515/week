@@ -24,7 +24,7 @@
 	export default {
 		data() {
 			return {
-				url:'http://www.163.com'
+				url:'https://www.yammer.com/'
 			}
 		},
 		methods: {
