@@ -105,20 +105,22 @@
 					hospital: '',
 					address: '',
 					area1: 0,
+					area1_zh:'北一区',
+					area2_zh:'Reborn',
 					area2: 0
 				},
-				array: ['中国', '美国', '巴西', '日本', '韩国', '俄罗斯', '朝鲜'],
+				array: ['北一区', '北二区', '华中区', '东一区', '东二区', '南区', '西区'],
 				array0: [],
 				index: 0,
 				index1: 0,
 				array1: [
-					['中国1', '美国1', '巴西1'],
-					['中国2', '美国2', '巴西2'],
-					['中国3', '美国3', '巴西3'],
-					['中国4', '美国4', '巴西4'],
-					['中国5', '美国5', '巴西5'],
-					['中国6', '美国6', '巴西6'],
-					['中国7', '美国7', '巴西7'],
+					['Reborn', '渤海明珠', '东方小巴黎','黄金海岸','三江发源','鸭绿江'],
+					['洲济', '京英', '京鸿','河北燕赵','燕津'],
+					['山河', '中原', '笑傲江湖','江西团队','金银湖'],
+					['浦发', '沪上', '浩海','西湖','之江','江凝'],
+					['秦淮', '淮海', '贯江','苏南','金陵','安徽'],
+					['武夷山', '越秀山', '流花湖','东山湖','梧桐山','九龙湖'],
+					['渝都', '滇黔', '金沙','浣花','丝洲','潼关'],
 				]
 
 			}
@@ -166,8 +168,38 @@
 					shijian: shijian
 				})
 				console.log('obj', obj)
-				const uploadTask = uni.uploadFile({
-					url: 'http://3w.donglianguoji.com/app/week/php/shipin.php', //仅为示例，非真实的接口地址
+				uni.uploadFile({
+					url: 'http://3w.donglianguoji.com/app/week/php/shipin.php', 
+					filePath: this.form.src,
+					name: 'file',
+					formData: obj,
+					success: (uploadFileRes) => {
+						console.log(uploadFileRes);
+						if (uploadFileRes.data=='ok') {
+							uni.hideLoading()
+							uni.redirectTo({
+								url: '../chenggong/chenggong'
+							})
+						} else{
+							uni.showModal({
+								content:'失败，请重试',
+								showCancel:false,
+								success: (res) => {
+									if(res.confirm){
+										uni.hideLoading()
+										this.choosePhoto = true
+									}
+								}
+							})
+						}
+					},
+					fail: (res) => {
+						console.log(res)
+					}
+				});
+				
+				/* const uploadTask = uni.uploadFile({
+					url: 'http://3w.donglianguoji.com/app/week/php/shipin.php', 
 					filePath: this.form.src,
 					name: 'file',
 					formData: obj,
@@ -178,8 +210,6 @@
 				uploadTask.onProgressUpdate((res) => {
 					console.log('上传进度' + res.progress);
 					that.jindu = res.progress
-					// console.log('已经上传的数据长度' + res.totalBytesSent);
-					// console.log('预期需要上传的数据总长度' + res.totalBytesExpectedToSend);
 					if (res.progress >= 100) {
 						uni.hideLoading()
 						uni.redirectTo({
@@ -187,20 +217,24 @@
 						})
 					}
 				
-				});
+				}); */
 			},
 			
 			bindPickerChange(e) {
 				console.log('大区值为', e.target.value)
 				this.index = e.target.value
 				this.form.area1 = e.target.value
+				this.form.area1_zh = this.array[e.target.value]
 				this.array0 = this.array1[this.index]
 				console.log(this.array0)
+				console.log('大区',this.form.area1_zh)
 			},
 			bindPickerChange1(e) {
 				console.log('小区值为', e.target.value)
 				this.index1 = e.target.value
 				this.form.area2 = e.target.value
+				this.form.area2_zh = this.array0[this.index1]
+				console.log('小区',this.form.area2_zh)
 			},
 			seePhoto(){
 				uni.redirectTo({

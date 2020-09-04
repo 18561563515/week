@@ -42,7 +42,7 @@
 	export default {
 		data() {
 			return {
-				array: ['中国', '美国', '巴西', '日本', '韩国', '俄罗斯', '朝鲜'],
+				array: ['北一区', '北二区', '华中区', '东一区', '东二区', '南区', '西区'],
 				index: 0,
 				imgarr:[],
 				scrollTop:0,
