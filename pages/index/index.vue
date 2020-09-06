@@ -182,12 +182,15 @@
 							})
 						} else{
 							uni.showModal({
-								content:'失败，请重试',
+								content:'OK',
 								showCancel:false,
 								success: (res) => {
 									if(res.confirm){
 										uni.hideLoading()
 										this.choosePhoto = true
+										uni.redirectTo({
+											url: '../chenggong/chenggong'
+										})
 									}
 								}
 							})
