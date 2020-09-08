@@ -306,8 +306,8 @@
 	}
 
 	.photo-content {
-		width: 580rpx;
-		height: 396rpx;
+		width: 588rpx;
+		height: 310rpx;
 		background: #fff;
 		border-radius: 10rpx;
 		box-shadow: 1px 1px 4px rgba(0, 0, 0, .3);
@@ -321,7 +321,7 @@
 	.txt {
 		position: absolute;
 		right: 87rpx;
-		top: 684rpx;
+		top: 594rpx;
 		color: #c5161e;
 		font-size: 20rpx;
 	}
@@ -332,7 +332,7 @@
 		flex-direction: column;
 		justify-content: center;
 		position: absolute;
-		top: 726rpx;
+		top: 650rpx;
 		left: 50%;
 		transform: translateX(-50%);
 	}
@@ -424,13 +424,13 @@
 	}
 
 	.upload-btn {
-		width: 223rpx;
-		height: 63rpx;
+		width: 224rpx;
+		height: 62rpx;
 		background: #808080;
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
-		top: 1220rpx;
+		top: 1154rpx;
 		background: url(../../static/applybtn.png) no-repeat center center;
 		background-size: 100%;
 	}

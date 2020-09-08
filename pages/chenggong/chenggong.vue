@@ -17,6 +17,9 @@
 		<view class="btn" @click="linkweb">
 			<image src="../../static/btnLink.png" mode="widthFix" class="pic"></image>
 		</view>
+		<view class="tips">
+			<text><text>{{timetiao}}</text>秒后跳转</text>
+		</view>
 	</view>
 </template>
 
@@ -24,18 +27,27 @@
 	export default {
 		data() {
 			return {
-				url:'https://www.yammer.com/'
+				url:'https://www.yammer.com/its.jnj.com/#/threads/inGroup?type=in_group&feedId=36656283648',
+				timetiao:3
 			}
 		},
 		methods: {
 			linkweb(){
-				
+				location.href = this.url
 			}
 		},
 		onShow() {
-			setTimeout(()=>{
+			setInterval(()=>{
+				if (this.timetiao == 0) {
+					this.linkweb()
+				} else{
+					this.timetiao--
+				}
+			},1000)
+			
+			/* setTimeout(()=>{
 				location.href = this.url
-			},3000)
+			},3000) */
 		}
 	}
 </script>
@@ -80,5 +92,16 @@
 		left: 50%;
 		transform: translateX(-50%);
 		top: 705rpx;
+	}
+	.tips{
+		font-size: 24rpx;
+		width: 100%;
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		top: 852rpx;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
 	}
 </style>

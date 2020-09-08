@@ -22,11 +22,16 @@
 				<view class="sanjiao">
 					
 				</view>
-				<view class="uni-input">{{array[index]}}</view>
+				<view class="uni-input" v-if="isChoose">请选择区域</view>
+				<view class="uni-input" v-else>{{array[index]}}</view>
 			</view>
 			<view class="rongqi1">
-				<view class="box" v-for="(i,index) in imgarr" :key="index" @click="clickPic(i.url)">
-					<image :src="i.url" mode="aspectFill" class="pic"></image>
+				<view class="box1" v-for="(i,index) in imgarr" :key="index" @click="clickPic(i.url)">
+					<view class="box">
+						<image :src="i.url" mode="aspectFill" class="pic"></image>
+					</view>
+					
+					<text class="name-txt">上传者：{{i.name}}</text>
 					<!-- <easy-loadimage mode="widthFix"
 					                :scroll-top="scrollTop"
 					                :image-src="i.url"></easy-loadimage> -->
@@ -47,7 +52,8 @@
 				imgarr:[],
 				scrollTop:0,
 				hidemark:false,
-				src:''
+				src:'',
+				isChoose:true
 			}
 		},
 		components:{
@@ -55,7 +61,7 @@
 		},
 			
 		onShow() {
-			this.init()
+			this.initAll()
 		},
 		methods: {
 			onPageScroll({scrollTop}) {
@@ -65,6 +71,7 @@
 			bindPickerChange(e) {
 				console.log('大区值为', e.target.value)
 				this.index = e.target.value
+				this.isChoose = false
 				this.init()
 			},
 			clickPic(e){
@@ -89,6 +96,32 @@
 						if(e.data.length == 0){
 							uni.showModal({
 								content:'该分类下暂无照片',
+								showCancel:false
+							})
+						}
+					},
+					fail: (m) => {
+						console.log(m)
+					}
+				})
+			},
+			initAll(){
+				uni.showLoading({
+					title:'加载中···',
+					mask:true
+				})
+				uni.request({
+					url:'http://3w.donglianguoji.com/app/week/php/txtall.php',
+					method:'POST',
+					data:{index:'all'},
+					header:{'content-type': 'application/x-www-form-urlencoded'},
+					success: (e) => {
+						uni.hideLoading()
+						console.log(e)
+						this.imgarr = e.data
+						if(e.data.length == 0){
+							uni.showModal({
+								content:'暂无照片',
 								showCancel:false
 							})
 						}
@@ -166,12 +199,28 @@ page {
 		
 		border-radius: 10rpx;
 	}
-	.box{
+	.name-txt{
+		font-size: 24rpx;
+	}
+	.box1{
 		float: left;
+		width: 270rpx;
+		height: 248rpx;
+		/* background: #E9EDEF; */
+		margin: 30rpx;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		/* border-radius: 15rpx; */
+	}
+	.box{
+		/* float: left; */
 		width: 270rpx;
 		height: 208rpx;
 		background: #E9EDEF;
-		margin: 30rpx;
+		margin-bottom: 10rpx;
 		overflow: hidden;
 		border-radius: 15rpx;
 	}
