@@ -76,7 +76,7 @@
 						<image src="../../static/txt5.png" mode="widthFix" class="txt-pic-5"></image>
 					</view>
 					<view class="other">
-						<input type="text" value="" class="name-input" v-model="form.address" />
+						<input type="text" value="" class="name-input1" v-model="form.address" placeholder="寄送地址及联系人，无需求可填不需要" placeholder-class="name111"/>
 					</view>
 				</view>
 
@@ -397,6 +397,15 @@
 		height: 100%;
 		padding-left: 20rpx;
 		font-size: 26rpx;
+	}
+	.name-input1 {
+		height: 100%;
+		padding-left: 20rpx;
+		font-size: 20rpx;
+	}
+	.name111{
+		font-size: 20rpx;
+		/* color: #007AFF; */
 	}
 
 	.uni-input {
