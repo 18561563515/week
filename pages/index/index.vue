@@ -53,7 +53,7 @@
 						<image src="../../static/txt3.png" mode="widthFix" class="txt-pic-3"></image>
 					</view>
 					<view class="other">
-						<picker @change="bindPickerChange" :value="index" :range="array" mode="selector" class="picker">
+						<picker @change="bindPickerChange" :value="index" :range="array" mode="selector" class="picker" >
 
 						</picker>
 						<view class="uni-input">{{array[index]}}</view>
@@ -92,6 +92,7 @@
 </template>
 
 <script>
+	import LbPicker from '@/components/lb-picker'
 	export default {
 		data() {
 			return {
@@ -105,8 +106,8 @@
 					hospital: '',
 					address: '',
 					area1: 0,
-					area1_zh:'北一区',
-					area2_zh:'Reborn',
+					area1_zh:'',
+					area2_zh:'',
 					area2: 0
 				},
 				array: ['北一区', '北二区', '华中区', '东一区', '东二区', '南区', '西区'],
@@ -116,7 +117,7 @@
 				array1: [
 					['Reborn', '渤海明珠', '东方小巴黎','黄金海岸','三江发源','鸭绿江'],
 					['洲济', '京英', '京鸿','河北燕赵','燕津'],
-					['山河', '中原', '笑傲江湖','江西团队','金银湖'],
+					['山河', '中原', '笑傲江湖','豫章团队','金银湖'],
 					['浦发', '沪上', '浩海','西湖','之江','江凝'],
 					['秦淮', '淮海', '贯江','苏南','金陵','安徽'],
 					['武夷山', '越秀山', '流花湖','东山湖','梧桐山','九龙湖'],
@@ -128,6 +129,9 @@
 		onLoad() {
 			this.array0 = this.array1[0]
 		},
+		components: {
+		      LbPicker
+		    },
 		methods: {
 			upload() {
 				let that = this
@@ -229,11 +233,14 @@
 				this.form.area1 = e.target.value
 				this.form.area1_zh = this.array[e.target.value]
 				this.array0 = this.array1[this.index]
-				console.log(this.array0)
+				this.index1 = 0
+				this.form.area2_zh = this.array0[0]
+				// console.log(this.array0)
 				console.log('大区',this.form.area1_zh)
+				console.log('小区',this.form.area2_zh)
 			},
 			bindPickerChange1(e) {
-				console.log('小区值为', e.target.value)
+				// console.log('小区值为', e.target.value)
 				this.index1 = e.target.value
 				this.form.area2 = e.target.value
 				this.form.area2_zh = this.array0[this.index1]
